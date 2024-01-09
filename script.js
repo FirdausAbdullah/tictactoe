@@ -1,5 +1,5 @@
 function GameBoard(){
-    const board = [];
+    let board = [];
     const boardRow = 3;
     const boardCol = 3;
     
@@ -15,29 +15,55 @@ function GameBoard(){
     function showBoard(){ 
         let boardArr = [];
         board.forEach((square)=>{
-            boardArr.push(square.content);
+            boardArr.push(square.showContent());
         });
         return boardArr;
     }
 
-    // function editBoard(token,position){
-    //     board.filter();
-    // }
+    function editBoard(token,position){
+        board.map((cell)=>{
+            if(cell.position == position){
+                cell.changeContent(token);
+                return cell.showContent();
+            }
+            else return cell.showContent();
+        });
+    }
 
-    return {showBoard}
+    return {showBoard,editBoard}
 }
 
 
 function Square(position){
-    const content = '-';
-    return{content,position}
+    let content = '-';
+    function changeContent(token){
+        content = token;
+    }
+    function showContent(){
+        return content;
+    }
+    return{changeContent,showContent,position}
 }
 
-function Player(name,token){
-    // function makeMove(token,position){
-
-    // };
+function Player(token){
+    return {token}
 }
 
-const game=GameBoard();
-console.log(game.showBoard());
+function PlayRound(){
+    // show current board
+    let position = 7;
+    const game=GameBoard();
+    console.log(game.showBoard());
+
+    // player choose token
+    const playerOne = Player('X');
+
+    // choose position to place token
+    game.editBoard(playerOne.token,position);
+    console.log(game.showBoard());
+    // computer respond
+    // 
+
+}
+
+const startGame = PlayRound();
