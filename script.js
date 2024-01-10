@@ -7,8 +7,8 @@ function GameBoard(){
     for(let i=0;i<boardRow; i++){
         
         for(let j=0; j<boardCol; j++){
-            squareNum++;
             board.push(Square(squareNum));
+            squareNum++;
         }
     }
 
@@ -21,6 +21,9 @@ function GameBoard(){
     }
 
     function editBoard(token,position){
+        if(checkBoard(position)) {
+            return console.log('cannot make move');
+        }
         board.map((cell)=>{
             if(cell.position == position){
                 cell.changeContent(token);
@@ -29,6 +32,12 @@ function GameBoard(){
             else return cell.showContent();
         });
     }
+
+    function checkBoard(position){
+        if(board[position].showContent()!='-'){return true;}
+        else {return false;}
+    }
+
 
     return {showBoard,editBoard}
 }
@@ -49,20 +58,34 @@ function Player(token){
     return {token}
 }
 
+function ComputerPlayer(token){
+    function makeMove(){
+            let rando = Math.floor(Math.random() * 9);
+            return rando;
+    }
+    function showToken(){return token;}
+    return{showToken,makeMove}
+}
+
 function PlayRound(){
     // show current board
-    let position = 7;
+    let position = 0;
     const game=GameBoard();
     console.log(game.showBoard());
 
     // player choose token
-    const playerOne = Player('X');
+    let playerOne = Player('O');
+    let comp;
+    if(playerOne.token == 'X') {comp = ComputerPlayer('O');}
+    else {comp = ComputerPlayer('X');}
 
     // choose position to place token
     game.editBoard(playerOne.token,position);
     console.log(game.showBoard());
+
     // computer respond
-    // 
+    game.editBoard(comp.showToken(),comp.makeMove());
+    console.log(game.showBoard());
 
 }
 
