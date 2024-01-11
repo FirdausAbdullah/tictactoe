@@ -34,7 +34,7 @@ function GameBoard(){
     }
 
     function checkBoard(position){
-        if(board[position].showContent()!='-'){return true;}
+        if(board[position].showContent()!=''){return true;}
         else {return false;}
     }
 
@@ -44,7 +44,7 @@ function GameBoard(){
 
 
 function Square(position){
-    let content = '-';
+    let content = '';
     function changeContent(token){
         content = token;
     }
@@ -67,26 +67,68 @@ function ComputerPlayer(token){
     return{showToken,makeMove}
 }
 
-function PlayRound(){
-    // show current board
-    let position = 0;
-    const game=GameBoard();
-    console.log(game.showBoard());
+// function PlayRound(){
+//     // show current board
+//     let position = 0;
+//     const game=GameBoard();
+//     console.log(game.showBoard());
 
-    // player choose token
-    let playerOne = Player('O');
-    let comp;
-    if(playerOne.token == 'X') {comp = ComputerPlayer('O');}
-    else {comp = ComputerPlayer('X');}
+//     // player choose token
+//     let playerOne = Player('O');
+//     let comp;
+//     if(playerOne.token == 'X') {comp = ComputerPlayer('O');}
+//     else {comp = ComputerPlayer('X');}
 
-    // choose position to place token
-    game.editBoard(playerOne.token,position);
-    console.log(game.showBoard());
+//     // choose position to place token
+//     game.editBoard(playerOne.token,position);
+//     console.log(game.showBoard());
 
-    // computer respond
-    game.editBoard(comp.showToken(),comp.makeMove());
-    console.log(game.showBoard());
+//     // computer respond
+//     game.editBoard(comp.showToken(),comp.makeMove());
+//     console.log(game.showBoard());
 
-}
+// }
 
-const startGame = PlayRound();
+//const startGame = PlayRound();
+
+//displayBridge() ------------------------
+// - select all div square into js var
+// - add eventhandler
+
+const editDOM = (function (){
+    const squares = Array.from(document.querySelectorAll('.cell'));
+
+    let screenSquares = [];
+
+    const readScreenBoard = ()=>{
+        let current = []
+        squares.forEach((square)=>{
+            current.push(square.innerText);
+        });
+        return current;
+    };
+
+    const updateScreenBoard = (token,position)=>{
+        squares.map((square)=>{
+            if(square.id == `pos${position}`){
+                square.innerText = token;
+            }
+        });
+    };
+
+    return{readScreenBoard,updateScreenBoard}
+})();
+
+
+
+console.log(editDOM.readScreenBoard());
+
+
+
+
+
+
+
+
+
+
