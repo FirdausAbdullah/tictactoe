@@ -54,18 +54,23 @@ function Square(position){
     return{changeContent,showContent,position}
 }
 
-function Player(token){
-    return {token}
-}
+const player = (function(){
+    let token = '';
+    function showToken(){return token;}
+    function setToken(choice){token = choice;}
+    return {showToken,setToken};
+})();
 
-function ComputerPlayer(token){
+const computerPlayer = (function(){
+    let token = '';
     function makeMove(){
             let rando = Math.floor(Math.random() * 9);
             return rando;
     }
     function showToken(){return token;}
-    return{showToken,makeMove}
-}
+    function setToken(choice){token = choice;}
+    return{showToken,makeMove,setToken}
+})();
 
 // function PlayRound(){
 //     // show current board
@@ -91,14 +96,23 @@ function ComputerPlayer(token){
 
 //const startGame = PlayRound();
 
-//displayBridge() ------------------------
-// - select all div square into js var
-// - add eventhandler
 
 const editDOM = (function (){
     const squares = Array.from(document.querySelectorAll('.cell'));
+    const newGameButton = document.querySelector('.control #newGame');
+    const playerChoice = Array.from(document.querySelectorAll(".choice"))
+    let playerMove = {};
+    
+    const domSetup =()=>{
+        
+        squares.forEach((square)=>{
+            square.addEventListener('click',positionClicked);
+        });
 
-    let screenSquares = [];
+        newGameButton.addEventListener('click',newGame);
+        playerChoice.forEach((btn)=>btn.addEventListener('click',playerEmblem));
+    }
+
 
     const readScreenBoard = ()=>{
         let current = []
@@ -110,20 +124,48 @@ const editDOM = (function (){
 
     const updateScreenBoard = (token,position)=>{
         squares.map((square)=>{
-            if(square.id == `pos${position}`){
+            if(square.id == position){
                 square.innerText = token;
             }
         });
     };
 
-    return{readScreenBoard,updateScreenBoard}
+    const positionClicked =(e)=>{
+        if(e.target.innerText!=''){
+            return alert('Cannot place token here !');
+        }
+        e.target.innerText = player.showToken();
+        playerMove = {'token':e.target.innerText, 'position':e.target.id};
+    }
+
+    const newGame = ()=>{
+        player.setToken('');
+        computerPlayer.setToken('');
+        clearBoard();
+    };
+
+    const playerEmblem = (e)=>{
+        if(player.showToken()!='')return;
+        player.setToken(e.target.innerText);
+        computerPlayer.setToken((player.showToken()=='X')?'O':'X');
+    };
+    
+    const clearBoard = ()=>{squares.map((square)=>{
+            square.innerText = '';
+    });}
+
+    return{readScreenBoard,updateScreenBoard,domSetup,clearBoard}
 })();
 
+// const userInput = (function(){
+
+// })();
 
 
-console.log(editDOM.readScreenBoard());
+const gameFlow = (function(){
+    editDOM.domSetup();
 
-
+})();
 
 
 
